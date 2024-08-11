@@ -2,6 +2,9 @@ import { useAppStore } from "@/store";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import ContactsContainer from "./components/contacts-container";
+import EmptyChatContainer from "./components/empty-chat-container";
+import ChatContainer from "./components/chat-container";
 
 const Chat = () => {
   const { userInfo } = useAppStore();
@@ -16,7 +19,11 @@ if (!userInfo.profileSetup){
 
   return (
     <>
-      <div>CHAT</div>
+      <div>
+        <ContactsContainer/>
+        <EmptyChatContainer/>
+        <ChatContainer/>
+      </div>
     </>
   );
 };

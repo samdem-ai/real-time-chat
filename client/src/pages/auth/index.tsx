@@ -8,14 +8,14 @@ import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
 import { LOGIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants";
 import { useNavigate } from "react-router-dom";
-import {useAppStore} from '@/store/'
+import { useAppStore } from "@/store";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-    const {setUserInfo} = useAppStore()
-  const navigate = useNavigate()
+  const { setUserInfo } = useAppStore();
+  const navigate = useNavigate();
 
   const validateSignup = () => {
     if (!email.length) {
@@ -31,7 +31,7 @@ const Auth = () => {
 
     return true;
   };
-    const validateLogin= () => {
+  const validateLogin = () => {
     if (!email.length) {
       toast.error("Email is required");
       return false;
@@ -44,23 +44,27 @@ const Auth = () => {
   };
 
   const handleLogin = async () => {
-    if (validateLogin()){
+    if (validateLogin()) {
+      try {
         const response = await apiClient.post(
-            LOGIN_ROUTE,
-            {email,password},
-            {withCredentials: true}
-        )
-        if (response.data.user.id){
-            setUserInfo(response.data.user)
-            if(response.data.user.profileSetup){
-                navigate("/chat")
-            }else{
-                navigate("/profile")
-            }
+          LOGIN_ROUTE,
+          { email, password },
+          { withCredentials: true }
+        );
+        if (response.data.user.id) {
+          setUserInfo(response.data.user);
+          if (response.data.user.profileSetup) {
+            navigate("/chat");
+          } else {
+            navigate("/profile");
+          }
         }
+      } catch (e) {
+        console.log(`error : ${e.message}`);
+        toast.error("Incorrect username or password");
+      }
     }
   };
-
   const handleSignup = async () => {
     if (validateSignup()) {
       const response = await apiClient.post(
@@ -68,9 +72,9 @@ const Auth = () => {
         { email, password },
         { withCredentials: true }
       );
-      if (response.status === 201){
-        setUserInfo(response.data.user)
-        navigate("/profile")
+      if (response.status === 201) {
+        setUserInfo(response.data.user);
+        navigate("/profile");
       }
       console.log(response);
     }
@@ -105,58 +109,65 @@ const Auth = () => {
                   Sign-up
                 </TabsTrigger>
               </TabsList>
-              <TabsContent
-                value="login"
-              >
-                <form onSubmit={(e)=>{e.preventDefault();handleLogin()}} className="flex flex-col gap-5 mt-10 transition-all duration-300">
-                <Input
-                  placeholder="Email"
-                  type="email"
-                  className="rounded-full p-6"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <Input
-                  placeholder="Password"
-                  type="password"
-                  className="rounded-full p-6"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <Button className="rounded-full p-6" onClick={handleLogin}>
-                  Login
-                </Button>
+              <TabsContent value="login">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleLogin();
+                  }}
+                  className="flex flex-col gap-5 mt-10 transition-all duration-300"
+                >
+                  <Input
+                    placeholder="Email"
+                    type="email"
+                    className="rounded-full p-6"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <Input
+                    placeholder="Password"
+                    type="password"
+                    className="rounded-full p-6"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <Button className="rounded-full p-6" onClick={handleLogin}>
+                    Login
+                  </Button>
                 </form>
               </TabsContent>
-              <TabsContent
-
-                value="sign-up"
-              >
-                <form onSubmit={(e)=>{e.preventDefault();handleSignup()}} className="flex flex-col gap-5 transition-all duration-300">
-                <Input
-                  placeholder="Email"
-                  type="email"
-                  className="rounded-full p-6"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <Input
-                  placeholder="Password"
-                  type="password"
-                  className="rounded-full p-6"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <Input
-                  placeholder="Confirm Password"
-                  type="password"
-                  className="rounded-full p-6"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-                <Button className="rounded-full p-6" onClick={handleSignup}>
-                  Sign up
-                </Button>
+              <TabsContent value="sign-up">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSignup();
+                  }}
+                  className="flex flex-col gap-5 transition-all duration-300"
+                >
+                  <Input
+                    placeholder="Email"
+                    type="email"
+                    className="rounded-full p-6"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <Input
+                    placeholder="Password"
+                    type="password"
+                    className="rounded-full p-6"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <Input
+                    placeholder="Confirm Password"
+                    type="password"
+                    className="rounded-full p-6"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                  <Button className="rounded-full p-6" onClick={handleSignup}>
+                    Sign up
+                  </Button>
                 </form>
               </TabsContent>
             </Tabs>

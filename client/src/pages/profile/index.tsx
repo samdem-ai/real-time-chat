@@ -9,14 +9,19 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
-import { ADD_PROFILE_IMAGE_ROUTE, UPDATE_PROFILE_ROUTE } from "@/utils/constants";
+import {
+  ADD_PROFILE_IMAGE_ROUTE,
+  HOST,
+  UPDATE_PROFILE_ROUTE,
+} from "@/utils/constants";
 
 const Profile = () => {
   const navigate = useNavigate();
   const { userInfo, setUserInfo } = useAppStore();
   const [firstName, setFirstName] = useState(userInfo.firstName || "");
   const [lastName, setLastName] = useState(userInfo.lastName || "");
-  const [image, setImage] = useState("");
+  // eslint-disable-next-line no-constant-binary-expression
+  const [image, setImage] = useState(userInfo.image? `${HOST}/${userInfo.image}` : null);
   const [hovered, setHovered] = useState(false);
   const [selectedColor, setSelectedColor] = useState(userInfo.color || 0);
   const fileInputRef = useRef(null);
@@ -66,25 +71,48 @@ const Profile = () => {
     fileInputRef.current.click();
   };
 
-  const handleImageChange = async (e:any) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
-    if (file){
+    if (file) {
       const formData = new FormData();
-      formData.append("profile-image",file)
-      const response = await apiClient.post(ADD_PROFILE_IMAGE_ROUTE,formData,{withCredentials:true})
-      if (response.status === 200){
-        setUserInfo({...userInfo,image:response.data.image});
-        toast.success("Image updated successfully")
+      formData.append("profile-image", file);
+      try {
+        const response = await apiClient.post(
+          ADD_PROFILE_IMAGE_ROUTE,
+          formData,
+          { withCredentials: true }
+        );
+        if (response.status === 200) {
+          console.log(response);
+          setUserInfo({ ...userInfo, image: response.data.image });
+          setImage(`${HOST}/${response.data.image}`);
+          toast.success("Image updated successfully");
+        }
+      } catch (e) {
+        console.log(e.message);
       }
     }
-
   };
 
-  const handleDeleteImage = async () => {};
+  const handleDeleteImage = async () => {
+    try {
+      const response = await apiClient.delete(ADD_PROFILE_IMAGE_ROUTE, {
+        withCredentials: true,
+      });
+      if (response.status === 200) {
+        setUserInfo({ ...userInfo, image: null });
+        toast.success("Image removed successfully");
+        setImage(null)
+        navigate(0)
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <div className="bg-[#1b1c24] h-[100vh] flex items-center justify-center flex-col gap-10">
-      <div className="flex flex-col gap-10 w-[80vw] md:w-max ">
+      <div className="flex flex-col gap-10 w-[70%]  md:w-[50%] ">
         <IoArrowBack
           onClick={handleNavigate}
           className="text-4xl lg:text-6xl text-white/90 cursor-pointer"
@@ -116,7 +144,10 @@ const Profile = () => {
             )}
           </Avatar>
           {hovered && (
-            <div className="absolute inset-0 flex items-center bg-black/50 justify-center ring-fuchsia-50 w-32 h-32 rounded-full md:w-48 md:h-48 top-14 md:top-0" onClick={image? handleDeleteImage : handleFileInputClick}>
+            <div
+              className="absolute inset-0 flex items-center bg-black/50 justify-center ring-fuchsia-50 w-32 h-32 rounded-full md:w-48 md:h-48 top-14 md:top-0"
+              onClick={image ? handleDeleteImage : handleFileInputClick}
+            >
               {image ? (
                 <FaTrash className="text-white text-3xl cursor-pointer" />
               ) : (
@@ -124,7 +155,14 @@ const Profile = () => {
               )}
             </div>
           )}
-          <input type="file" ref={fileInputRef} className="hidden" onChange={handleImageChange} name="profile-image" accept=".png, .jpg, .jpeg, .webp"/>
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            onChange={handleImageChange}
+            name="profile-image"
+            accept=".png, .jpg, .jpeg, .webp"
+          />
         </div>
         <div className="flex min-w-32 md:min-w-64 flex-col gap-5 text-white items-center justify-center">
           <div className="w-full">
@@ -173,7 +211,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      <div className="w-[70%]">
+      <div className="w-[70%] md:w-[50%] lg:w-[40%]">
         <Button
           onClick={saveChanges}
           className=" h-16 w-full bg-purple-700 hover:bg-purple-900 transition-all duration-300"

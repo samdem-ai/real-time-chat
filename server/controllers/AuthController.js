@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/UserModel.js";
 import { compare } from "bcrypt";
-import { renameSync } from "fs";
+import { renameSync, unlinkSync } from "fs";
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 
@@ -145,35 +145,24 @@ export const updateProfile = async (req, res, next) => {
   }
 };
 
+
 export const addProfileImage = async (req, res, next) => {
   try {
-    const { userId } = req;
-    const { firstName, lastName, color } = req.body;
-    if (!firstName || !lastName || color === undefined) {
-      return res
-        .status(403)
-        .send("First name Last name and color are all required.");
+    if (!req.file) {
+      return res.status(400).send("file is required");
     }
+    const date = Date.now();
+    let fileName = `uploads/profiles/${date}${req.file.originalname}`;
+    renameSync(req.file.path, fileName);
 
-    const userData = await User.findByIdAndUpdate(
-      userId,
-      {
-        firstName: capitalize(firstName),
-        lastName: capitalize(lastName),
-        color,
-        profileSetup: true,
-      },
+    const updatedUser = await User.findByIdAndUpdate(
+      req.userId,
+      { image: fileName },
       { new: true, runValidators: true }
     );
 
     return res.status(200).json({
-      id: userData.id,
-      email: userData.email,
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      image: userData.image,
-      color: userData.color,
-      profileSetup: userData.profileSetup,
+      image:updatedUser.image,
     });
   } catch (e) {
     console.log({ e });
@@ -183,22 +172,21 @@ export const addProfileImage = async (req, res, next) => {
 
 export const removeProfileImage = async (req, res, next) => {
   try {
-    if (!req.file) {
-      return res.status(400).send("file is required");
+    const { userId } = req;
+    const user = await User.findById(userId)
+
+    if(!user){
+      return res.status(404).send("User not found")
     }
-    const date = Date.now();
-    let fileName = `uploads/profiles/${date}${req.file.originalName}`;
-    renameSync(req.file.path, fileName);
 
-    const updatedUser = await User.findOneAndUpdate(
-      req.userId,
-      { image: fileName },
-      { new: true, runValidators: true }
-    );
+    if(user.image){
+      unlinkSync(user.image)
+    }
 
-    return res.status(200).json({
-      image:updatedUser.image,
-    });
+    user.image = null
+    await user.save();
+
+    return res.status(200).send("profile image removed successfully");
   } catch (e) {
     console.log({ e });
     return res.status(500).send("Internal Server Error");
