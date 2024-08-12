@@ -21,7 +21,10 @@ export const signup = async (req, res, next) => {
     if (!email || !password) {
       return res.status(400).send("Email and password are required");
     }
-
+    const exists = await User.findOne({email});
+    if (exists){
+      return res.status(409).send("Email already in use")
+    }
     const user = await User.create({ email, password });
     res.cookie("jwt", createToken(email, user.id), {
       maxAge,
@@ -187,6 +190,16 @@ export const removeProfileImage = async (req, res, next) => {
     await user.save();
 
     return res.status(200).send("profile image removed successfully");
+  } catch (e) {
+    console.log({ e });
+    return res.status(500).send("Internal Server Error");
+  }
+};
+
+export const logout = async (req, res, next) => {
+  try {
+    res.cookie("jwt","",{maxAge:1,secure:true,sameSite:true})
+    res.status(200).send("Logged out successfully.")
   } catch (e) {
     console.log({ e });
     return res.status(500).send("Internal Server Error");

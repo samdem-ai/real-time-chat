@@ -66,6 +66,7 @@ const Auth = () => {
     }
   };
   const handleSignup = async () => {
+    try{
     if (validateSignup()) {
       const response = await apiClient.post(
         SIGNUP_ROUTE,
@@ -77,6 +78,9 @@ const Auth = () => {
         navigate("/profile");
       }
       console.log(response);
+    }}catch(e){
+      toast.error(e.response.data)
+      console.log(e.response)
     }
   };
 

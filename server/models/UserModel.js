@@ -27,18 +27,25 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: false,
   },
-  profileSetup:{
+  profileSetup: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
-userSchema.pre("save",async function(next){
-    const salt = await genSalt()
-    this.password = await hash(this.password, salt)
-    next();
-})
+userSchema.methods.toJSON = function () {
+  const user = this;
+  const userObject = user.toObject();
+  delete userObject.password;
+  return userObject;
+};
 
-const User = mongoose.model("Users",userSchema);
+userSchema.pre("save", async function (next) {
+  const salt = await genSalt();
+  this.password = await hash(this.password, salt);
+  next();
+});
 
-export default User
+const User = mongoose.model("Users", userSchema);
+
+export default User;
