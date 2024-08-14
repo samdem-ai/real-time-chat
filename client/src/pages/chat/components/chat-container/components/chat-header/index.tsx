@@ -16,7 +16,7 @@ const ChatHeader = () => {
           {/* TODO make this into a component to reuse it instead of copying it */}
           <div className="w-12 h-12 relative ">
             <Avatar className="h-12 w-12 rounded-full overflow-hidden">
-              {currentChatData.image ? (
+              {selectedChatType === "contact" && currentChatData.image ? (
                 <AvatarImage
                   src={`${HOST}/${currentChatData.image}`}
                   alt="profile"
@@ -24,13 +24,20 @@ const ChatHeader = () => {
                 />
               ) : (
                 <AvatarFallback
-                  className={`h-12 w-12 text-lg items-center justify-center rounded-full ${getColor(
-                    currentChatData.color
-                  )}`}
+                  className={`h-12 w-12 text-lg items-center justify-center rounded-full ${
+                    selectedChatType === "contact"
+                      ? getColor(currentChatData.color)
+                      : "bg-[#ffffff22] font-semibold border border-white/50"
+                  }`}
                 >
-                  {currentChatData.firstName
-                    ? currentChatData.firstName.split("").shift()?.toUpperCase()
-                    : currentChatData.email.split("").shift()?.toUpperCase()}
+                  {selectedChatType === "contact"
+                    ? currentChatData.firstName
+                      ? currentChatData.firstName
+                          .split("")
+                          .shift()
+                          ?.toUpperCase()
+                      : currentChatData.email.split("").shift()?.toUpperCase()
+                    : selectedChatData.name.split("")[0].toUpperCase()}
                 </AvatarFallback>
               )}
             </Avatar>
@@ -40,6 +47,7 @@ const ChatHeader = () => {
               (currentChatData.firstName
                 ? `${currentChatData.firstName} ${currentChatData.lastName}`
                 : currentChatData.email)}
+            {selectedChatType === "channel" && selectedChatData.name}
           </div>
         </div>
         <div className="flex items-center justify-center gap-5">

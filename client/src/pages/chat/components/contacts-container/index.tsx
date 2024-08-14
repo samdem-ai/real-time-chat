@@ -2,25 +2,41 @@ import { useEffect } from "react";
 import NewDm from "./components/new-dm";
 import ProfileInfo from "./components/profile-info";
 import { apiClient } from "@/lib/api-client";
-import { GET_DM_CONTACTS } from "@/utils/constants";
-import {useAppStore} from "@/store"
+import { GET_DM_CONTACTS, GET_USER_CHANNELS_ROUTE } from "@/utils/constants";
+import { useAppStore } from "@/store";
 import ContactList from "@/components/ContactList";
+import CreateChannel from "./components/create-channel";
 
 const ContactsContainer = () => {
-  const {directMessagesContacts, setDirectMessagesContacts} = useAppStore()
+  const {
+    directMessagesContacts,
+    setDirectMessagesContacts,
+    channels,
+    setChannels,
+  } = useAppStore();
   useEffect(() => {
     const getContacts = async () => {
       const response = await apiClient.get(GET_DM_CONTACTS, {
         withCredentials: true,
       });
       if (response.data.contacts) {
-        console.log(response.data.contacts)
-        setDirectMessagesContacts(response.data.contacts)
+        setDirectMessagesContacts(response.data.contacts);
+      }
+    };
+
+    const getChannels = async () => {
+      const response = await apiClient.get(GET_USER_CHANNELS_ROUTE, {
+        withCredentials: true,
+      });
+
+      if (response.data.channels) {
+        setChannels(response.data.channels);
       }
     };
 
     getContacts();
-  }, [setDirectMessagesContacts]);
+    getChannels();
+  }, [setDirectMessagesContacts, setChannels]);
 
   return (
     <div className="relative md:w-[36vw] lg:w-[30vw] xl:w-[20vw] bg-[#1b1c24] border-r-2 border-[#2f303b] w-full">
@@ -33,12 +49,16 @@ const ContactsContainer = () => {
           <NewDm />
         </div>
         <div className="max-h-[28vh] overflow-y-auto scrollbar-hidden">
-          <ContactList contacts={directMessagesContacts}/>
+          <ContactList contacts={directMessagesContacts} />
         </div>
       </div>
       <div className="my-5">
         <div className="flex items-center justify-between pr-10">
           <Title text="Channels" />
+          <CreateChannel />
+        </div>
+        <div className="max-h-[28vh] overflow-y-auto scrollbar-hidden">
+          <ContactList contacts={channels} isChannel={true} />
         </div>
       </div>
       <ProfileInfo />

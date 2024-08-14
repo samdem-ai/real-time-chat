@@ -48,9 +48,12 @@ const ContactList = ({ contacts, isChannel = false }) => {
                 ) : (
                   <AvatarFallback
                     className={`h-10 w-10 text-lg items-center justify-center rounded-full
-                        ${selectedChatData && selectedChatData._id === contact._id ? "bg-[#ffffff22] border-white/70 border" : getColor(
-                      contact.color
-                    )}`}
+                        ${
+                          selectedChatData &&
+                          selectedChatData._id === contact._id
+                            ? "bg-[#ffffff22] border-white/70 border"
+                            : getColor(contact.color)
+                        }`}
                   >
                     {contact.firstName
                       ? contact.firstName.split("").shift()?.toUpperCase()
@@ -60,8 +63,8 @@ const ContactList = ({ contacts, isChannel = false }) => {
               </Avatar>
             )}
             {isChannel && (
-              <div className="bg-[#ffffff22] h-10 w-10 justify-center items-center rounded-full">
-                #
+              <div className="flex bg-[#ffffff22] font-semibold text-lg border border-white/50 h-10 w-10 justify-center items-center rounded-full">
+                <p>{contact.name.split("")[0].toUpperCase()}</p>
               </div>
             )}
             {isChannel ? (

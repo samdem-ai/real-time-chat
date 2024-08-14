@@ -2,10 +2,16 @@ import { useAppStore } from "@/store";
 import { useEffect, useRef, useState } from "react";
 import moment from "moment";
 import { apiClient } from "@/lib/api-client";
-import { GET_ALL_MESSAGES, HOST } from "@/utils/constants";
+import {
+  GET_ALL_CHANNEL_MESSAGES,
+  GET_ALL_MESSAGES,
+  HOST,
+} from "@/utils/constants";
 import { MdFolderZip } from "react-icons/md";
 import { IoMdArrowRoundDown } from "react-icons/io";
 import { IoCloseSharp } from "react-icons/io5";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getColor } from "@/lib/utils";
 
 const MessageContainer = () => {
   const imageRef = useRef();
@@ -17,6 +23,7 @@ const MessageContainer = () => {
     setSelectedChatMessages,
     setFileDownloadProgress,
     setIsDownloading,
+    userInfo,
   } = useAppStore();
   const [showImage, setShowImage] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
@@ -37,9 +44,27 @@ const MessageContainer = () => {
         console.log(error);
       }
     };
+
+    const getChannelMessages = async () => {
+      try {
+        const response = await apiClient(GET_ALL_CHANNEL_MESSAGES, {
+          withCredentials: true,
+          params: {
+            channelId: selectedChatData._id,
+          },
+        });
+        if (response.data.messages) {
+          setSelectedChatMessages(response.data.messages);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
     if (selectedChatData._id) {
       if (selectedChatType === "contact") {
         getMessages();
+      } else if (selectedChatType === "channel") {
+        getChannelMessages();
       }
     }
   }, [selectedChatData, selectedChatType, setSelectedChatMessages]);
@@ -125,6 +150,7 @@ const MessageContainer = () => {
             </div>
           )}
           {selectedChatType === "contact" && renderDmMessages(message)}
+          {selectedChatType === "channel" && renderChannelMessages(message)}
         </div>
       );
     });
@@ -148,6 +174,109 @@ const MessageContainer = () => {
             {message.content}
           </div>
         )}
+        {message.messageType === "file" && (
+          <div
+            className={`${
+              message.sender._id !== userInfo._id
+                ? "bg-[#8417ff]/5 text-white border-[#8417ff]/50"
+                : "bg-[#2a2b33]/5 text-white/80 border-white/20"
+            } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
+          >
+            {checkIfImage(message.fileUrl) ? (
+              <div
+                className="cursor-pointer "
+                onClick={() => {
+                  setShowImage(true);
+                  setImageUrl(message.fileUrl);
+                }}
+              >
+                <img
+                  src={`${HOST}/${message.fileUrl}`}
+                  height={300}
+                  width={300}
+                />
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-4">
+                <span className="text-white/80 text-3xl bg-black/20 rounded-full p-3 ">
+                  <MdFolderZip />
+                </span>
+                <span className="">{message.fileUrl.split("/").pop()}</span>
+                <span
+                  className="bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"
+                  onClick={() => {
+                    downloadFile(message.fileUrl);
+                  }}
+                >
+                  <IoMdArrowRoundDown />
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+        <div className="text-xs text-gray-600">
+          {moment(message.timestamp).format("LT")}
+        </div>
+      </div>
+    );
+  };
+
+  const renderChannelMessages = (message) => {
+    console.log(userInfo);
+    console.log(message);
+    return (
+      <div
+        className={`${
+          message.sender._id === userInfo.id ? "text-right" : "text-left mt-3"
+        }`}
+      >
+        <div className="">
+          {message.sender._id !== userInfo.id && (
+            <span
+              className={`text-xs text-gray-500 block ${
+                message.messageType === "text" && "ms-91"
+              }`}
+            >{`${message.sender.firstName} ${message.sender.lastName}`}</span>
+          )}
+          <div
+            className={`${
+              message.sender._id !== userInfo.id &&
+              "flex justify-start items-end gap-2"
+            }`}
+          >
+            {message.sender._id !== userInfo.id &&
+              message.messageType === "text" && (
+                <Avatar className="h-6 w-6 mb-2 rounded-full overflow-hidden inline-block">
+                  {message.sender.image ? (
+                    <AvatarImage
+                      src={`${HOST}/${message.sender.image}`}
+                      alt="profile"
+                      className="object-cover w-full h-full bg-black"
+                    />
+                  ) : (
+                    <AvatarFallback
+                      className={`h-6 w-6 text-lg items-center justify-center rounded-full text-xs ${getColor(
+                        message.sender.color
+                      )}`}
+                    >
+                      {message.sender.firstName.split("")[0].toUpperCase()}
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+              )}
+            {message.messageType === "text" && (
+              <div
+                className={`${
+                  message.sender._id === userInfo.id
+                    ? "bg-[#8417ff]/5 text-white border-[#8417ff]/50"
+                    : "bg-[#2a2b33]/5 text-white/80 border-white/20"
+                } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
+              >
+                <p>{message.content}</p>
+              </div>
+            )}
+          </div>
+        </div>
         {message.messageType === "file" && (
           <div
             className={`${
@@ -188,7 +317,12 @@ const MessageContainer = () => {
             )}
           </div>
         )}
-        <div className="text-xs text-gray-600">
+
+        <div
+          className={`text-xs text-gray-600 ${
+            message.messageType === "text" ? "ms-9" : ""
+          }`}
+        >
           {moment(message.timestamp).format("LT")}
         </div>
       </div>

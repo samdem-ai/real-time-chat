@@ -56,7 +56,7 @@ export const getContactsForDmList = async (req, res, next) => {
       },
       {
         $lookup: {
-          from: "users",
+          from: "Users",
           localField: "_id",
           foreignField: "_id",
           as: "contactInfo",
@@ -91,7 +91,7 @@ export const getContactsForDmList = async (req, res, next) => {
 export const getAllContacts = async (req, res, next) => {
   try {
     const users = await User.find(
-      { _id: { $ne: request.userId } },
+      { _id: { $ne: req.userId } },
       "firstName lastName email _id"
     );
 
@@ -99,6 +99,7 @@ export const getAllContacts = async (req, res, next) => {
       label: user.firstName
         ? `${user.firstName} ${user.lastName}`
         : `${user.email}`,
+      value: user._id,
     }));
 
     return res.status(200).json({ contacts });
