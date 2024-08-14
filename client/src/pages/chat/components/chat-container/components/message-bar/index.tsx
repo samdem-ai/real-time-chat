@@ -3,10 +3,14 @@ import { GrAttachment } from "react-icons/gr";
 import { IoSend } from "react-icons/io5";
 import { RiEmojiStickerLine } from "react-icons/ri";
 import EmojiPicker, { Theme } from "emoji-picker-react";
+import { useAppStore } from "@/store";
+import { useSocket } from "@/context/SocketContext";
 const MessageBar = () => {
   const emojiRef = useRef();
   const [message, setMessage] = useState("");
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
+  const { selectedChatType, selectedChatData, userInfo } = useAppStore();
+  const socket = useSocket();
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -16,21 +20,31 @@ const MessageBar = () => {
     }
     document.addEventListener("mousedown", handleClickOutside);
 
-    return ()=>{
-      document.removeEventListener("mousedown",handleClickOutside)
-    }
-
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [emojiRef]);
 
   const handleAddEmoji = (emoji) => {
     setMessage((msg) => msg + emoji.emoji);
   };
 
-  const handleSendMessage = async () => {};
+  const handleSendMessage = async () => {
+    if (selectedChatType === "contact" && message) {
+      socket.emit("sendMessage", {
+        sender: userInfo.id,
+        content: message,
+        recipient: selectedChatData._id,
+        messageType:"text",
+        fileUrl:undefined
+      });
+    }
+    setMessage("")
+  };
 
   return (
     <div className="h-[10vh] bg-[#1c1d25] flex items-center justify-center px-8 mb-6 gap-6">
-      <div className="flex-1 flex bg-[#2a2b33] rounded-md items-center gap-5 pr-5">
+      <form onSubmit={(e)=>{e.preventDefault();handleSendMessage()}} className="flex-1 flex bg-[#2a2b33] rounded-md items-center gap-5 pr-5">
         <input
           placeholder="Enter Message"
           type="text"
@@ -45,6 +59,7 @@ const MessageBar = () => {
           <button
             className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
             onClick={() => {
+              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
               emojiPickerOpen
                 ? setEmojiPickerOpen(false)
                 : setEmojiPickerOpen(true);
@@ -61,7 +76,7 @@ const MessageBar = () => {
             />
           </div>
         </div>
-      </div>
+      </form>
       <button
         onClick={handleSendMessage}
         className="bg-[#8417ff] rounded-md flex items-center justify-center p-5 focus:border-none focus:outline-none focus:text-white duration-300 transition-all hover:bg-[#741bda] focus:bg-[#741bda]"
