@@ -14,11 +14,16 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 const databaseURL = process.env.DATABASE_URL;
-
+const allowedOrigins = [process.env.ORIGIN, "http://192.168.1.36:5173"];
 app.use(
   cors({
-    origin: [process.env.ORIGIN],
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    origin: function (origin, callback) {
+      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );

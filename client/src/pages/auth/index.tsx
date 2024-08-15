@@ -66,27 +66,28 @@ const Auth = () => {
     }
   };
   const handleSignup = async () => {
-    try{
-    if (validateSignup()) {
-      const response = await apiClient.post(
-        SIGNUP_ROUTE,
-        { email, password },
-        { withCredentials: true }
-      );
-      if (response.status === 201) {
-        setUserInfo(response.data.user);
-        navigate("/profile");
+    try {
+      if (validateSignup()) {
+        const response = await apiClient.post(
+          SIGNUP_ROUTE,
+          { email, password },
+          { withCredentials: true }
+        );
+        if (response.status === 201) {
+          setUserInfo(response.data.user);
+          navigate("/profile");
+        }
+        console.log(response);
       }
-      console.log(response);
-    }}catch(e){
-      toast.error(e.response.data)
-      console.log(e.response)
+    } catch (e) {
+      toast.error(e.response.data);
+      console.log(e.response);
     }
   };
 
   return (
     <div className="h-[100vh] w-[100vw] flex items-center justify-center">
-      <div className="h-[80vh] bg-white border-2 border-white text-opacity-90 shadow-2xl w-[80vw] md:w-[90vw] lg:w-[70vw] xl:w-[60vw] rounded-3xl grid xl:grid-cols-2">
+      <div className="p-4 md:p-0 md:h-[80vh] bg-white border-2 border-white text-opacity-90 md:shadow-2xl w-[100vw] md:w-[90vw] lg:w-[70vw] xl:w-[60vw] rounded-3xl grid xl:grid-cols-2">
         <div className="flex flex-col gap-10 items-center justify-center">
           <div className="flex items-center justify-center flex-col">
             <div className="flex items-center justify-center">

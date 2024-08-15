@@ -56,7 +56,7 @@ export const getContactsForDmList = async (req, res, next) => {
       },
       {
         $lookup: {
-          from: "Users",
+          from: "users",
           localField: "_id",
           foreignField: "_id",
           as: "contactInfo",

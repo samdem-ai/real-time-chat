@@ -234,7 +234,7 @@ const MessageContainer = () => {
           {message.sender._id !== userInfo.id && (
             <span
               className={`text-xs text-gray-500 block ${
-                message.messageType === "text" && "ms-91"
+                message.messageType === "text" && "ms-9"
               }`}
             >{`${message.sender.firstName} ${message.sender.lastName}`}</span>
           )}
@@ -300,11 +300,13 @@ const MessageContainer = () => {
                 />
               </div>
             ) : (
-              <div className="flex items-center justify-center gap-4">
+              <div className="flex items-center justify-center gap-4 w-fit">
                 <span className="text-white/80 text-3xl bg-black/20 rounded-full p-3 ">
                   <MdFolderZip />
                 </span>
-                <span className="">{message.fileUrl.split("/").pop()}</span>
+                <span className="line-clamp-2 text-s text-start">
+                  {message.fileUrl.split("/").pop()}
+                </span>
                 <span
                   className="bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"
                   onClick={() => {

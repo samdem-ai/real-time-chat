@@ -21,9 +21,9 @@ export const signup = async (req, res, next) => {
     if (!email || !password) {
       return res.status(400).send("Email and password are required");
     }
-    const exists = await User.findOne({email});
-    if (exists){
-      return res.status(409).send("Email already in use")
+    const exists = await User.findOne({ email });
+    if (exists) {
+      return res.status(409).send("Email already in use");
     }
     const user = await User.create({ email, password });
     res.cookie("jwt", createToken(email, user.id), {
@@ -148,7 +148,6 @@ export const updateProfile = async (req, res, next) => {
   }
 };
 
-
 export const addProfileImage = async (req, res, next) => {
   try {
     if (!req.file) {
@@ -165,7 +164,7 @@ export const addProfileImage = async (req, res, next) => {
     );
 
     return res.status(200).json({
-      image:updatedUser.image,
+      image: updatedUser.image,
     });
   } catch (e) {
     console.log({ e });
@@ -176,17 +175,17 @@ export const addProfileImage = async (req, res, next) => {
 export const removeProfileImage = async (req, res, next) => {
   try {
     const { userId } = req;
-    const user = await User.findById(userId)
+    const user = await User.findById(userId);
 
-    if(!user){
-      return res.status(404).send("User not found")
+    if (!user) {
+      return res.status(404).send("User not found");
     }
 
-    if(user.image){
-      unlinkSync(user.image)
+    if (user.image) {
+      unlinkSync(user.image);
     }
 
-    user.image = null
+    user.image = null;
     await user.save();
 
     return res.status(200).send("profile image removed successfully");
@@ -198,8 +197,8 @@ export const removeProfileImage = async (req, res, next) => {
 
 export const logout = async (req, res, next) => {
   try {
-    res.cookie("jwt","",{maxAge:1,secure:true,sameSite:true})
-    res.status(200).send("Logged out successfully.")
+    res.cookie("jwt", "", { maxAge: 1, secure: true, sameSite: false });
+    res.status(200).send("Logged out successfully.");
   } catch (e) {
     console.log({ e });
     return res.status(500).send("Internal Server Error");
