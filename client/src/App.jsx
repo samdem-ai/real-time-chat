@@ -8,46 +8,46 @@ import { useEffect, useState } from "react";
 import { apiClient } from "./lib/api-client";
 import { GET_USER_INFO } from "./utils/constants";
 
-const PrivateRoute = ({ children }: { children: JSX.Element }) => {
+const PrivateRoute = ({ children }) => {
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
   return isAuthenticated ? children : <Navigate to="/auth" />;
 };
-const AuthRoute = ({ children }: { children: JSX.Element }) => {
+const AuthRoute = ({ children }) => {
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
   return !isAuthenticated ? children : <Navigate to="/chat" />;
 };
 
 function App() {
-  const {userInfo, setUserInfo} = useAppStore()
+  const { userInfo, setUserInfo } = useAppStore()
   const [loading, setLoading] = useState(true)
-  useEffect(()=>{
-    const getUserData = async ()=>{
-      try{
-          const response = await apiClient.get(GET_USER_INFO,{withCredentials:true})
-          if(response.status === 200 && response.data.user.id){
-              setUserInfo(response.data.user)
-          }else{
-            setUserInfo(undefined)
-          }
-      }catch(e){
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const response = await apiClient.get(GET_USER_INFO, { withCredentials: true })
+        if (response.status === 200 && response.data.user.id) {
+          setUserInfo(response.data.user)
+        } else {
+          setUserInfo(undefined)
+        }
+      } catch (e) {
         setUserInfo(undefined)
         console.log(e)
-      }finally{
+      } finally {
         setLoading(false)
       }
     }
 
-    if(!userInfo){
+    if (!userInfo) {
       getUserData()
-    }else{
+    } else {
       setLoading(false)
     }
 
-  },[userInfo,setUserInfo])
+  }, [userInfo, setUserInfo])
 
-  if (loading){
+  if (loading) {
     return <div>Loading....</div>
   }
 
