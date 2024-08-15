@@ -22,14 +22,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Contact } from "@/utils/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getColor } from "@/lib/utils";
-import {useAppStore} from "@/store"
+import { useAppStore } from "@/store"
 
 const NewDm = () => {
-  const {setSelectedChatType,setSelectedChatData} = useAppStore()
+  const { setSelectedChatType, setSelectedChatData } = useAppStore()
   const [openNewContactModal, setOpenNewContactModal] = useState(false);
   const [searchedContacts, setSearchedContacts] = useState([]);
 
-  const searchContacts = async (searchTerm: string) => {
+  const searchContacts = async (searchTerm) => {
     try {
       if (searchTerm.length > 0) {
         const response = await apiClient.post(
@@ -50,7 +50,7 @@ const NewDm = () => {
     }
   };
 
-  const selectNewContact = (contact: Contact) => {
+  const selectNewContact = (contact) => {
     setOpenNewContactModal(false);
     setSearchedContacts([]);
     setSelectedChatType("contact");
@@ -86,13 +86,13 @@ const NewDm = () => {
           {searchedContacts.length > 0 && (
             <ScrollArea className="h-[250px]">
               <div className="flex flex-col gap-5">
-                {searchedContacts.map((contact: Contact) => (
+                {searchedContacts.map((contact) => (
                   <div
                     key={contact._id}
                     className="flex gap-3 items-center cursor-pointer hover:bg-neutral-500 rounded-lg p-2 -mb-3 transition-all duration-300"
-                    onClick={()=>selectNewContact(contact)}
+                    onClick={() => selectNewContact(contact)}
                   >
-                     {/* TODO make this into a component to reuse it instead of copying it */}
+                    {/* TODO make this into a component to reuse it instead of copying it */}
                     <div className="w-12 h-12 relative ">
                       <Avatar className="h-12 w-12 rounded-full overflow-hidden">
                         {contact.image ? (
@@ -109,9 +109,9 @@ const NewDm = () => {
                           >
                             {contact.firstName
                               ? contact.firstName
-                                  .split("")
-                                  .shift()
-                                  ?.toUpperCase()
+                                .split("")
+                                .shift()
+                                ?.toUpperCase()
                               : contact.email.split("").shift().toUpperCase()}
                           </AvatarFallback>
                         )}

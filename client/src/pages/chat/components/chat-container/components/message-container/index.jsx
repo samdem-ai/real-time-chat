@@ -105,7 +105,7 @@ const MessageContainer = () => {
     }
   };
 
-  const downloadFile = async (fileUrl: string) => {
+  const downloadFile = async (fileUrl) => {
     try {
       setIsDownloading(true);
       setFileDownloadProgress(0);
@@ -138,7 +138,7 @@ const MessageContainer = () => {
 
   const renderMessages = () => {
     let lastDate = "";
-    return selectedChatMessages.map((message, index: number) => {
+    return selectedChatMessages.map((message, index) => {
       const messageDate = moment(message.timestamp).format("YYYY_MM_DD");
       const showDate = messageDate !== lastDate;
       lastDate = messageDate;
@@ -159,28 +159,25 @@ const MessageContainer = () => {
   const renderDmMessages = (message) => {
     return (
       <div
-        className={`${
-          message.sender === selectedChatData._id ? "text-left" : "text-right"
-        }`}
+        className={`${message.sender === selectedChatData._id ? "text-left" : "text-right"
+          }`}
       >
         {message.messageType === "text" && (
           <div
-            className={`${
-              message.sender !== selectedChatData._id
-                ? "bg-[#8417ff]/5 text-white border-[#8417ff]/50"
-                : "bg-[#2a2b33]/5 text-white/80 border-white/20"
-            } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
+            className={`${message.sender !== selectedChatData._id
+              ? "bg-[#8417ff]/5 text-white border-[#8417ff]/50"
+              : "bg-[#2a2b33]/5 text-white/80 border-white/20"
+              } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
           >
             {message.content}
           </div>
         )}
         {message.messageType === "file" && (
           <div
-            className={`${
-              message.sender._id !== userInfo._id
-                ? "bg-[#8417ff]/5 text-white border-[#8417ff]/50"
-                : "bg-[#2a2b33]/5 text-white/80 border-white/20"
-            } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
+            className={`${message.sender._id !== userInfo._id
+              ? "bg-[#8417ff]/5 text-white border-[#8417ff]/50"
+              : "bg-[#2a2b33]/5 text-white/80 border-white/20"
+              } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
           >
             {checkIfImage(message.fileUrl) ? (
               <div
@@ -226,23 +223,20 @@ const MessageContainer = () => {
     console.log(message);
     return (
       <div
-        className={`${
-          message.sender._id === userInfo.id ? "text-right" : "text-left mt-3"
-        }`}
+        className={`${message.sender._id === userInfo.id ? "text-right" : "text-left mt-3"
+          }`}
       >
         <div className="">
           {message.sender._id !== userInfo.id && (
             <span
-              className={`text-xs text-gray-500 block ${
-                message.messageType === "text" && "ms-9"
-              }`}
+              className={`text-xs text-gray-500 block ${message.messageType === "text" && "ms-9"
+                }`}
             >{`${message.sender.firstName} ${message.sender.lastName}`}</span>
           )}
           <div
-            className={`${
-              message.sender._id !== userInfo.id &&
+            className={`${message.sender._id !== userInfo.id &&
               "flex justify-start items-end gap-2"
-            }`}
+              }`}
           >
             {message.sender._id !== userInfo.id &&
               message.messageType === "text" && (
@@ -266,11 +260,10 @@ const MessageContainer = () => {
               )}
             {message.messageType === "text" && (
               <div
-                className={`${
-                  message.sender._id === userInfo.id
-                    ? "bg-[#8417ff]/5 text-white border-[#8417ff]/50"
-                    : "bg-[#2a2b33]/5 text-white/80 border-white/20"
-                } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
+                className={`${message.sender._id === userInfo.id
+                  ? "bg-[#8417ff]/5 text-white border-[#8417ff]/50"
+                  : "bg-[#2a2b33]/5 text-white/80 border-white/20"
+                  } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
               >
                 <p>{message.content}</p>
               </div>
@@ -279,11 +272,10 @@ const MessageContainer = () => {
         </div>
         {message.messageType === "file" && (
           <div
-            className={`${
-              message.sender !== selectedChatData._id
-                ? "bg-[#8417ff]/5 text-white border-[#8417ff]/50"
-                : "bg-[#2a2b33]/5 text-white/80 border-white/20"
-            } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
+            className={`${message.sender !== selectedChatData._id
+              ? "bg-[#8417ff]/5 text-white border-[#8417ff]/50"
+              : "bg-[#2a2b33]/5 text-white/80 border-white/20"
+              } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
           >
             {checkIfImage(message.fileUrl) ? (
               <div
@@ -321,9 +313,8 @@ const MessageContainer = () => {
         )}
 
         <div
-          className={`text-xs text-gray-600 ${
-            message.messageType === "text" ? "ms-9" : ""
-          }`}
+          className={`text-xs text-gray-600 ${message.messageType === "text" ? "ms-9" : ""
+            }`}
         >
           {moment(message.timestamp).format("LT")}
         </div>

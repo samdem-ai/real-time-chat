@@ -27,11 +27,10 @@ const ContactList = ({ contacts, isChannel = false }) => {
       {contacts.map((contact) => (
         <div
           key={contact._id}
-          className={`pl-10 py-2 transition-all duration-300 cursor-pointer ${
-            selectedChatData && selectedChatData._id === contact._id
+          className={`pl-10 py-2 transition-all duration-300 cursor-pointer ${selectedChatData && selectedChatData._id === contact._id
               ? "bg-[#6013b7] hover:bg-[#571f97]"
               : "hover:bg-[#f1f1f111]"
-          }`}
+            }`}
           onClick={() => {
             handleClick(contact);
           }}
@@ -48,12 +47,11 @@ const ContactList = ({ contacts, isChannel = false }) => {
                 ) : (
                   <AvatarFallback
                     className={`h-10 w-10 text-lg items-center justify-center rounded-full
-                        ${
-                          selectedChatData &&
-                          selectedChatData._id === contact._id
-                            ? "bg-[#ffffff22] border-white/70 border"
-                            : getColor(contact.color)
-                        }`}
+                        ${selectedChatData &&
+                        selectedChatData._id === contact._id
+                        ? "bg-[#ffffff22] border-white/70 border"
+                        : getColor(contact.color)
+                      }`}
                   >
                     {contact.firstName
                       ? contact.firstName.split("").shift()?.toUpperCase()
