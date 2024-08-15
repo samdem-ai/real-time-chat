@@ -7,7 +7,7 @@ const setupSocket = (server) => {
     cors: {
       origin: [
         process.env.ORIGIN,
-        "https://66bd5ee83f6fbf34d5c84865--chatty-o.netlify.app",
+        "https://real-time-chat-omega.vercel.app",
       ],
       methods: ["GET", "POST"],
       credentials: true,
