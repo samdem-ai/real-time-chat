@@ -16,7 +16,7 @@ const port = process.env.PORT || 3000;
 const databaseURL = process.env.DATABASE_URL;
 const allowedOrigins = [
   process.env.ORIGIN,
-  "https://66bd5ee83f6fbf34d5c84865--chatty-o.netlify.app",
+  "https://real-time-chat-omega.vercel.app",
 ];
 app.use(
   cors({
