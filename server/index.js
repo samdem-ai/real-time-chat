@@ -20,7 +20,8 @@ const allowedOrigins = [
 ];
 app.use(
   cors({
-    origin: "*",
+    origin: allowedOrigins,
+    credential: true,
   })
 );
 app.use("/uploads/profiles", express.static("uploads/profiles"));
