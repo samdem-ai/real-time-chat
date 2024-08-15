@@ -5,7 +5,10 @@ import Channel from "./models/ChannelsModel.js";
 const setupSocket = (server) => {
   const io = new SocketIoServer(server, {
     cors: {
-      origin: [process.env.ORIGIN, "https://real-time-chat-qssw.vercel.app"],
+      origin: [
+        process.env.ORIGIN,
+        "https://66bd5ce73f6fbf3294c8481e--chatty-o.netlify.app/",
+      ],
       methods: ["GET", "POST"],
       credentials: true,
     },
