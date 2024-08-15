@@ -1,6 +1,5 @@
 import { RiCloseFill } from "react-icons/ri";
 import { useAppStore } from "@/store";
-import { Contact } from "@/utils/types";
 import { HOST } from "@/utils/constants";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getColor } from "@/lib/utils";
@@ -25,8 +24,8 @@ const ChatHeader = () => {
               ) : (
                 <AvatarFallback
                   className={`h-12 w-12 text-lg items-center justify-center rounded-full ${selectedChatType === "contact"
-                      ? getColor(currentChatData.color)
-                      : "bg-[#ffffff22] font-semibold border border-white/50"
+                    ? getColor(currentChatData.color)
+                    : "bg-[#ffffff22] font-semibold border border-white/50"
                     }`}
                 >
                   {selectedChatType === "contact"

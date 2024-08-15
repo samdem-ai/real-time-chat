@@ -5,7 +5,7 @@ import Channel from "./models/ChannelsModel.js";
 const setupSocket = (server) => {
   const io = new SocketIoServer(server, {
     cors: {
-      origin: [process.env.ORIGIN, "http://192.168.1.36:5173"],
+      origin: [process.env.ORIGIN, "https://real-time-chat-qssw.vercel.app"],
       methods: ["GET", "POST"],
       credentials: true,
     },

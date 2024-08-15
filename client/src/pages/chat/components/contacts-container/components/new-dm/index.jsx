@@ -19,7 +19,6 @@ import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
 import { GET_ALL_CONTACTS, HOST } from "@/utils/constants";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Contact } from "@/utils/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getColor } from "@/lib/utils";
 import { useAppStore } from "@/store"

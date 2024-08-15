@@ -14,7 +14,10 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 const databaseURL = process.env.DATABASE_URL;
-const allowedOrigins = [process.env.ORIGIN, "http://192.168.1.36:5173"];
+const allowedOrigins = [
+  process.env.ORIGIN,
+  "https://real-time-chat-qssw.vercel.app",
+];
 app.use(
   cors({
     origin: function (origin, callback) {
