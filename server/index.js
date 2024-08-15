@@ -14,14 +14,11 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 const databaseURL = process.env.DATABASE_URL;
-const allowedOrigins = [
-  process.env.ORIGIN,
-  "https://real-time-chat-omega.vercel.app",
-];
+const allowedOrigins = [process.env.ORIGIN];
 app.use(
   cors({
     origin: allowedOrigins,
-    credential: true,
+    credentials: true,
   })
 );
 app.use("/uploads/profiles", express.static("uploads/profiles"));
