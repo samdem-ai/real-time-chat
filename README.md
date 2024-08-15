@@ -87,6 +87,8 @@ This is a real-time chat application built using modern web technologies. The ap
 ## Future Plans
 
 - **Audio Messaging:** Users can send messages using their voice.
+- - **Mobile App:** Adapt the website to work as a mobile application.
+
 
 ## Contributing
 
