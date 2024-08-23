@@ -17,8 +17,17 @@ const databaseURL = process.env.DATABASE_URL;
 const allowedOrigins = [process.env.ORIGIN];
 app.use(
   cors({
+    allowedHeaders: [
+      "sessionId",
+      "Content-Type",
+      "Authorization",
+      "authorization",
+    ],
+    exposedHeaders: ["sessionId"],
     origin: allowedOrigins,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
+    preflightContinue: false,
   })
 );
 app.use(function (req, res, next) {
